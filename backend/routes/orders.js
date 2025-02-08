@@ -18,11 +18,11 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             required:
- *               - userID
+ *               - userId
  *               - items
  *               - totalAmount
  *             properties:
- *               userID:
+ *               userId:
  *                 type: string
  *                 example: "65f7a99d3e5e42b1a0f3d5c7"
  *               items:
@@ -49,8 +49,8 @@ const router = express.Router();
  */
 router.post('/', async (req, res) => {
     try {
-        const { userID, items, totalAmount } = req.body; 
-        const order = new Order({ userID, items, totalAmount });
+        const { userId, items } = req.body; 
+        const order = new Order({ userId, items});
         await order.save();
         res.status(201).json(order);
     } catch (err) {
@@ -61,7 +61,7 @@ router.post('/', async (req, res) => {
 
 /**
  * @swagger
- * /orders/{userID}:
+ * /orders/{userId}:
  *   get:
  *     summary: Get orders by user ID
  *     description: Fetches all orders for a specific user.
@@ -69,7 +69,7 @@ router.post('/', async (req, res) => {
  *       - Orders
  *     parameters:
  *       - in: path
- *         name: userID
+ *         name: userId
  *         required: true
  *         schema:
  *           type: string
@@ -82,9 +82,9 @@ router.post('/', async (req, res) => {
  *       500:
  *         description: Internal server error
  */
-router.get('/:userID', async (req, res) => {
+router.get('/:userId', async (req, res) => {
     try {
-        const orders = await Order.find({ userID: req.params.userID }).populate('items.menuItem');
+        const orders = await Order.find({ userId: req.params.userId }).populate('items.menuItem');
         if (!orders || orders.length === 0) {
             return res.status(404).json({ message: 'No orders found for this user' });
         }
@@ -92,6 +92,49 @@ router.get('/:userID', async (req, res) => {
     } catch (err) {
         console.error("Error fetching orders:", err);
         res.status(500).json({ message: "Internal server error", error: err.message });
+    }
+});
+
+/**
+ * @swagger
+ * /orders/user/{userId}:
+ *   get:
+ *     summary: Get orders by user ID and status
+ *     description: Fetches orders for a user, filtered by status.
+ *     tags: 
+ *       - Orders
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user whose orders are being retrieved
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [Pending, Completed, Cancelled]
+ *         description: Filter orders by status
+ *     responses:
+ *       200:
+ *         description: Orders retrieved successfully
+ *       400:
+ *         description: Invalid request parameters
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/user/:userId", async (req, res) => {
+    try {
+        const { status } = req.query;
+        const query = { userId: req.params.userId };
+        if (status) query.status = status;
+
+        const orders = await Order.find(query).populate("items.menuItem");
+        res.json(orders);
+    } catch (err) {
+        console.error(" Error fetching orders:", err);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
