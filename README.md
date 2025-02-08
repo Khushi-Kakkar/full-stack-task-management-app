@@ -8,7 +8,7 @@ It includes **user authentication, menu management, order processing, and JWT-ba
 ✅ Menu Management (Create, Read, Update, Delete menu items)  
 ✅ Order Management (Place, Fetch, Filter orders by status)  
 ✅ MongoDB with Mongoose ORM  
-✅ Secure Password Hashing using `bcrypt`  
+✅ Secure Password Hashing using bcrypt
 ✅ API Documentation with Swagger  
 
 
@@ -38,6 +38,7 @@ It includes **user authentication, menu management, order processing, and JWT-ba
   ├── .gitignore              # Ignore node_modules, .env, and logs
   ├── package.json            # Dependencies & scripts
   ├── server.js               # Main entry point - Express app setup
+  ├── 📂 node modules         # Installed dependencies
 
 
   --
