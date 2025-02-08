@@ -95,47 +95,4 @@ router.get('/:userId', async (req, res) => {
     }
 });
 
-/**
- * @swagger
- * /orders/user/{userId}:
- *   get:
- *     summary: Get orders by user ID and status
- *     description: Fetches orders for a user, filtered by status.
- *     tags: 
- *       - Orders
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         schema:
- *           type: string
- *         description: The ID of the user whose orders are being retrieved
- *       - in: query
- *         name: status
- *         schema:
- *           type: string
- *           enum: [Pending, Completed, Cancelled]
- *         description: Filter orders by status
- *     responses:
- *       200:
- *         description: Orders retrieved successfully
- *       400:
- *         description: Invalid request parameters
- *       500:
- *         description: Internal server error
- */
-router.get("/user/:userId", async (req, res) => {
-    try {
-        const { status } = req.query;
-        const query = { userId: req.params.userId };
-        if (status) query.status = status;
-
-        const orders = await Order.find(query).populate("items.menuItem");
-        res.json(orders);
-    } catch (err) {
-        console.error(" Error fetching orders:", err);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
-
 module.exports = router;
