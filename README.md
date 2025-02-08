@@ -41,7 +41,7 @@ It includes **user authentication, menu management, order processing, and JWT-ba
   ├── 📂 node modules         # Installed dependencies
 
 
-  --
+  ---
 
   ## API Documentation link
 
